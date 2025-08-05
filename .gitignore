@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+env/
+
+# dotenv secrets
+.env
+
+# VSCode config (если используешь)
+.vscode/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# PyInstaller
+*.spec
+build/
+dist/
+
+# pytest / coverage
+htmlcov/
+.coverage
+.pytest_cache/
+
+# IDEs
+.idea/
+*.swp
+*.swo
