@@ -1,21 +1,20 @@
-import paramiko
+import subprocess
 import os
-
 def run_deploy():
-    host = os.getenv("SSH_HOST")
-    user = os.getenv("SSH_USER")
-    key_path = os.path.expanduser(os.getenv("SSH_KEY_PATH"))
-    command = os.getenv("DEPLOY_CMD")
-
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    script_path = os.getenv("DEPLOY_SCRIPT_PATH", "/home/user/devops/deploy.sh")
     try:
-        ssh.connect(hostname=host, username=user, key_filename=key_path)
-        stdin, stdout, stderr = ssh.exec_command(command)
-        out = stdout.read().decode()
-        err = stderr.read().decode()
-        return out if out else err
+        result = subprocess.run(
+            ["/bin/bash", script_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=300  
+        )
+        if result.returncode == 0:
+            return result.stdout
+        else:
+            return f"❌ Ошибка:\n{result.stderr}"
+    except subprocess.TimeoutExpired:
+        return "⚠️ Скрипт превысил лимит времени"
     except Exception as e:
-        return f"Ошибка SSH: {str(e)}"
-    finally:
-        ssh.close()
+        return f"⚠️ Ошибка при запуске: {str(e)}"
